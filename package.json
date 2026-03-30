@@ -1,0 +1,34 @@
+{
+  "name": "backend-capstoneproject",
+  "version": "1.0.0",
+  "description": "- I chose the concept and theme of my API to be a Lost and Found API because it could help people to easier report lost items, search for and reclaim their lost items at specific locations. I think that this project is practical and can be a useful tool in the real world.",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "build": "tsc"
+    "test": "jest",
+    "test:watch": "jest --watch"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrc-w2025-msaria/BackEnd-CapstoneProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rrc-w2025-msaria/BackEnd-CapstoneProject/issues"
+  },
+  "homepage": "https://github.com/rrc-w2025-msaria/BackEnd-CapstoneProject#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
+  }
+}
