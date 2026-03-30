@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch"
-
   },
   "repository": {
     "type": "git",
@@ -29,6 +28,8 @@
   },
   "dependencies": {
     "@types/express": "^5.0.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase-admin": "^13.7.0",
+    "joi": "^18.1.1"
   }
 }
