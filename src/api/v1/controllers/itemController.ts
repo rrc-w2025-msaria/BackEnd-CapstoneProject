@@ -56,7 +56,7 @@ export const createItem = async (
     // const description: string = req.body.description;
     const { name, description, locationId, status } = req.body;
 
-    const newItem: Item = await itemService.createLoan(
+    const newItem: Item = await itemService.createItem(
       name,
       description,
       locationId,
@@ -113,7 +113,7 @@ export const deleteItem = async (
   try {
     const id = req.params.id as string;
 
-    await itemService.deleteLoan(id);
+    await itemService.deleteItem(id);
     res
       .status(HTTP_STATUS.OK)
       .json(successResponse("Item successfully deleted"));
