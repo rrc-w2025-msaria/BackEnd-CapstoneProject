@@ -62,21 +62,17 @@ export const getItemById = async (id: string): Promise<Item> => {
 };
 
 /**
- * Creates a new loan
- * @returns The created loan with generated ID
+ * Creates a new item
+ * @returns The created item with generated ID
  */
-export const createItem = async (
-  name: string,
-  description: string,
-  locationId: string,
-  status: itemStatus,
-): Promise<Item> => {
+export const createItem = async (itemData: {
+  name: string;
+  description: string;
+}): Promise<Item> => {
+  const dateNow = new Date();
   const newItem: Partial<Item> = {
-    name,
-    description,
-    locationId,
-    status,
-    createdAt: new Date().toISOString(),
+    ...itemData,
+    createdAt: dateNow.toISOString(),
   };
 
   const itemId: string = await createDocument<Item>(COLLECTION, newItem);
