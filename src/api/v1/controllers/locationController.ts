@@ -70,3 +70,46 @@ export const createLocation = async (
     next(error);
   }
 };
+
+export const updateLocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    // const id: string = req.params.id;
+    const id = req.params.id as string;
+
+    // Extract update fields
+    const { address } = req.body;
+
+    // create the update item object with the fields to be updated
+    const updatedLocation: Location = await locationService.updateLocation(
+      id,
+      address,
+    );
+
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(updatedLocation, "Location updated successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const deleteLocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+
+    await locationService.deleteLocation(id);
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse("Location successfully deleted"));
+  } catch (error: unknown) {
+    next(error);
+  }
+};

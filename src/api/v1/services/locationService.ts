@@ -80,3 +80,34 @@ export const createLocation = async (
 
   return structuredClone({ id: locationId, ...newLocation } as Location);
 };
+
+export const updateLocation = async (
+  id: string,
+  address: string,
+): Promise<Location> => {
+  // check if the location exists before updating
+  const location: Location = await getLocationById(id);
+  const updatedLocation: Location = {
+    ...location,
+    address,
+  };
+
+  await updateDocument<Location>(COLLECTION, id, updatedLocation);
+
+  return structuredClone(updatedLocation);
+};
+
+/**
+ * Deletes an location from storage
+ * @param id - The ID of the location to delete
+ * @throws Error if location with given ID is not found
+ */
+export const deleteLocation = async (id: string): Promise<void> => {
+  // check if the location exists before deleting
+  const location: Location = await getLocationById(id);
+  if (!location) {
+    throw new NotFoundError("Location not found", "LOCATION_NOT_FOUND");
+  }
+
+  await deleteDocument(COLLECTION, id);
+};
