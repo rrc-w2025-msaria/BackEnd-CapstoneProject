@@ -114,9 +114,8 @@ describe("Item Service", () => {
 
   // get item by id
   it("should get item by id successfully", async () => {
-    const mockDocumentId: string = "test-item-id";
     const mockItem: Item = {
-      id: mockDocumentId,
+      id: "test-item-id",
       name: "Item Name",
       description: "Test Description",
       locationId: "location-id",
@@ -125,7 +124,7 @@ describe("Item Service", () => {
     };
 
     (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue({
-      id: mockDocumentId,
+      id: mockItem.id,
       data: () => ({
         name: mockItem.name,
         description: mockItem.description,
@@ -135,12 +134,12 @@ describe("Item Service", () => {
       }),
     });
 
-    const result = await itemService.getItemById(mockDocumentId);
+    const result = await itemService.getItemById(mockItem.id);
 
     expect(result).toEqual(mockItem);
     expect(firestoreRepository.getDocumentById).toHaveBeenCalledWith(
       "items",
-      mockDocumentId,
+      mockItem.id,
     );
   });
 });
