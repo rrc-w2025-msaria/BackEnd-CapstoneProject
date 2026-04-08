@@ -7,4 +7,5 @@ export interface Item {
   locationId: string;
   status: itemStatus;
   createdAt: string;
+  updatedAt?: string; // this is an optional part, used in updateItem
 }

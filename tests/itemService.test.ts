@@ -1,6 +1,7 @@
 import * as itemService from "../src/api/v1/services/itemService";
 import * as firestoreRepository from "../src/api/v1/repositories/firestoreRepository";
 import { Item, itemStatus } from "../src/api/v1/models/itemModel";
+import { firestore } from "firebase-admin";
 
 // Mock the repository module
 // jest.mock replaces the entire module with an auto-mocked version
@@ -74,6 +75,70 @@ describe("Item Service", () => {
     // Assert
     expect(itemService.getItemById).toHaveBeenCalledWith(mockDocumentId);
     expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith(
+      "items",
+      mockDocumentId,
+    );
+  });
+
+  // update item
+  it("should update item successfully", async () => {
+    const mockDocumentId: string = "test-item-id";
+    const updateData: Item = {
+      id: mockDocumentId,
+      name: "Item Name",
+      description: "Test Description",
+      locationId: "location-id",
+      status: "lost",
+      createdAt: new Date().toISOString(),
+    };
+
+    jest.spyOn(itemService, "getItemById").mockResolvedValue(updateData);
+
+    (firestoreRepository.updateDocument as jest.Mock).mockResolvedValue(
+      undefined,
+    );
+
+    const result = await itemService.updateItem(mockDocumentId, "found");
+
+    expect(itemService.getItemById).toHaveBeenCalledWith(mockDocumentId);
+    expect(firestoreRepository.updateDocument).toHaveBeenCalledWith(
+      "items",
+      mockDocumentId,
+      expect.objectContaining({
+        ...updateData,
+        status: "found",
+        updatedAt: expect.any(String),
+      }),
+    );
+  });
+
+  // get item by id
+  it("should get item by id successfully", async () => {
+    const mockDocumentId: string = "test-item-id";
+    const mockItem: Item = {
+      id: mockDocumentId,
+      name: "Item Name",
+      description: "Test Description",
+      locationId: "location-id",
+      status: "lost",
+      createdAt: new Date().toISOString(),
+    };
+
+    (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue({
+      id: mockDocumentId,
+      data: () => ({
+        name: mockItem.name,
+        description: mockItem.description,
+        locationId: mockItem.locationId,
+        status: mockItem.status,
+        createdAt: mockItem.createdAt,
+      }),
+    });
+
+    const result = await itemService.getItemById(mockDocumentId);
+
+    expect(result).toEqual(mockItem);
+    expect(firestoreRepository.getDocumentById).toHaveBeenCalledWith(
       "items",
       mockDocumentId,
     );

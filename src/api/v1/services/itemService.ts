@@ -96,6 +96,7 @@ export const updateItem = async (
   const updatedItem: Item = {
     ...item,
     status,
+    updatedAt: new Date().toISOString(),
   };
 
   await updateDocument<Item>(COLLECTION, id, updatedItem);
