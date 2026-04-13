@@ -70,6 +70,7 @@ export const createItem = async (itemData: {
   description: string;
   locationId: string;
   status: itemStatus;
+  contactInfo: string;
   imageUrl?: string; // this is optional, if image can be provided
 }): Promise<Item> => {
   const dateNow = new Date();
