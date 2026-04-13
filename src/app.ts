@@ -3,7 +3,6 @@ import express, { Express } from "express";
 
 import itemRoutes from "./api/v1/routes/itemRoutes";
 import locationRoutes from "./api/v1/routes/locationRoutes";
-import statusRoutes from "./api/v1/routes/statusRoutes";
 import errorHandler from "./api/v1/middleware/errorHandler";
 import {
   accessLogger,
@@ -69,7 +68,6 @@ app.get("/api/v1/health", (req, res) => {
 // "/api/v1/items" will prefix all item routes
 app.use("/api/v1/items", itemRoutes);
 app.use("/api/v1/locations", locationRoutes);
-app.use("/api/v1/status", statusRoutes);
 
 // Route Imports END
 
