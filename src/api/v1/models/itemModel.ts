@@ -8,4 +8,5 @@ export interface Item {
   status: itemStatus;
   createdAt: string;
   updatedAt?: string; // this is an optional part, used in updateItem
+  imageUrl?: string;
 }

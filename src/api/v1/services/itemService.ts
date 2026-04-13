@@ -68,6 +68,9 @@ export const getItemById = async (id: string): Promise<Item> => {
 export const createItem = async (itemData: {
   name: string;
   description: string;
+  locationId: string;
+  status: itemStatus;
+  imageUrl?: string; // this is optional, if image can be provided
 }): Promise<Item> => {
   const dateNow = new Date();
   const newItem: Partial<Item> = {

@@ -56,12 +56,15 @@ export const createItem = async (
     // const description: string = req.body.description;
     const { name, description, locationId, status } = req.body;
 
-    const newItem: Item = await itemService.createItem(
+    const imageUrl = req.file ? req.file.path : undefined;
+
+    const newItem: Item = await itemService.createItem({
       name,
       description,
       locationId,
       status,
-    );
+      imageUrl,
+    });
     res
       .status(HTTP_STATUS.CREATED)
       .json(successResponse(newItem, "Item created successfully"));
