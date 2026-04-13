@@ -5,6 +5,7 @@ const router: Router = express.Router();
 
 // "/api/v1/items" prefixes all below routes
 router.get("/", locationController.getAllLocations);
+router.get("/:id", locationController.getLocationById);
 router.post("/", locationController.createLocation);
 router.put("/:id", locationController.updateLocation);
 router.delete("/:id", locationController.deleteLocation);
