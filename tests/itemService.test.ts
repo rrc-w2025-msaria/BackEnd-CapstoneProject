@@ -19,11 +19,13 @@ describe("Item Service", () => {
       description: string;
       locationId: string;
       status: itemStatus;
+      contactInfo: string;
     } = {
       name: "Test Item",
       description: "Test Description",
       locationId: "location-id",
       status: "lost",
+      contactInfo: "123-4567",
     };
     const mockDocumentId: string = "test-item-id";
 
@@ -42,6 +44,7 @@ describe("Item Service", () => {
         description: mockItemData.description,
         locationId: mockItemData.locationId,
         status: mockItemData.status,
+        contactInfo: mockItemData.contactInfo,
         createdAt: expect.any(String),
       }),
     );
@@ -58,6 +61,7 @@ describe("Item Service", () => {
       description: "Test Description",
       locationId: "location-id",
       status: "lost",
+      contactInfo: "123-4567",
       createdAt: new Date().toISOString(),
     };
 
@@ -89,6 +93,7 @@ describe("Item Service", () => {
       description: "Test Description",
       locationId: "location-id",
       status: "lost",
+      contactInfo: "123-4567",
       createdAt: new Date().toISOString(),
     };
 
@@ -120,6 +125,7 @@ describe("Item Service", () => {
       description: "Test Description",
       locationId: "location-id",
       status: "lost",
+      contactInfo: "123-4567",
       createdAt: new Date().toISOString(),
     };
 
@@ -130,6 +136,7 @@ describe("Item Service", () => {
         description: mockItem.description,
         locationId: mockItem.locationId,
         status: mockItem.status,
+        contactInfo: mockItem.contactInfo,
         createdAt: mockItem.createdAt,
       }),
     });
@@ -141,6 +148,7 @@ describe("Item Service", () => {
       description: mockItem.description,
       locationId: mockItem.locationId,
       status: mockItem.status,
+      contactInfo: mockItem.contactInfo,
       createdAt: expect.any(String),
     });
     // expect(firestoreRepository.getDocumentById).toHaveBeenCalledWith(
