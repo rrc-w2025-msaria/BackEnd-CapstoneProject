@@ -6,6 +6,8 @@ export interface Item {
   description: string;
   locationId: string;
   status: itemStatus;
+  contactInfo: string;
   createdAt: string;
   updatedAt?: string; // this is an optional part, used in updateItem
+  imageUrl?: string;
 }

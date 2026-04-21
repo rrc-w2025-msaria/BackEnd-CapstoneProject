@@ -54,14 +54,18 @@ export const createItem = async (
     // Extract only the fields we want (destructuring)
     // const name: string = req.body.name;
     // const description: string = req.body.description;
-    const { name, description, locationId, status } = req.body;
+    const { name, description, locationId, status, contactInfo } = req.body;
 
-    const newItem: Item = await itemService.createItem(
+    const imageUrl = req.file ? req.file.path : undefined;
+
+    const newItem: Item = await itemService.createItem({
       name,
       description,
       locationId,
       status,
-    );
+      contactInfo,
+      imageUrl,
+    });
     res
       .status(HTTP_STATUS.CREATED)
       .json(successResponse(newItem, "Item created successfully"));
