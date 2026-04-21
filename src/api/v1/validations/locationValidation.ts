@@ -1,18 +1,21 @@
 import Joi from "joi";
-import { deleteItem } from "../services/itemService";
 
 export const locationSchemas = {
   createLocation: {
     body: Joi.object({
-      id: Joi.string().required(),
-      name: Joi.string().required(),
+      name: Joi.string().min(2).max(50).required().messages({
+        "string.empty": "Name is required",
+        "string.min": "Name must be at least 2 characters",
+      }),
       address: Joi.string().required(),
     }),
   },
 
   getLocationById: {
     params: Joi.object({
-      id: Joi.string().required(),
+      id: Joi.string().required().messages({
+        "string.empty": "Location ID is required",
+      }),
     }),
   },
 
@@ -22,7 +25,17 @@ export const locationSchemas = {
     }),
 
     body: Joi.object({
-      address: Joi.string().required(),
+      address: Joi.string().required().messages({
+        "any.only": "Address must be provided",
+      }),
+    }),
+  },
+
+  deleteLocation: {
+    params: Joi.object({
+      id: Joi.string().required().messages({
+        "string.empty": "Location ID is required",
+      }),
     }),
   },
 };

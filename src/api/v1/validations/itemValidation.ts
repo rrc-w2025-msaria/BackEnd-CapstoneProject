@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { deleteItem } from "../services/itemService";
 
 export const itemSchemas = {
   createItem: {
