@@ -18,9 +18,9 @@ export const setCustomClaims = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { uid, roles } = req.body;
+    const { uid, claims } = req.body;
 
-    await auth.setCustomUserClaims(uid, roles);
+    await auth.setCustomUserClaims(uid, claims);
 
     res
       .status(HTTP_STATUS.OK)

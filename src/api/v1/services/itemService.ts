@@ -73,11 +73,20 @@ export const createItem = async (itemData: {
   contactInfo: string;
   imageUrl?: string; // this is optional, if image can be provided
 }): Promise<Item> => {
-  const dateNow = new Date();
-  const newItem: Partial<Item> = {
-    ...itemData,
-    createdAt: dateNow.toISOString(),
+  const dateNow = new Date().toISOString();
+
+  const newItem: any = {
+    name: itemData.name,
+    description: itemData.description,
+    locationId: itemData.locationId,
+    status: itemData.status,
+    contactInfo: itemData.contactInfo,
+    createdAt: dateNow,
   };
+
+  if (itemData.imageUrl) {
+    newItem.imageUrl = itemData.imageUrl;
+  }
 
   const itemId: string = await createDocument<Item>(COLLECTION, newItem);
 

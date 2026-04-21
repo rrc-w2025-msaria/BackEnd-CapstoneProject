@@ -20,8 +20,12 @@ export const itemSchemas = {
         .valid("lost", "found", "claimed")
         .required()
         .messages({
-          "string.empty": "Contact info is required",
+          "string.empty": "Status must be one of lost, found, or claimed",
         }),
+
+      contactInfo: Joi.string().required().messages({
+        "string.empty": "Contact info is required",
+      }),
     }),
   },
 

@@ -43,10 +43,7 @@ const authenticate = async (
       next(error);
     } else if (error instanceof Error) {
       next(
-        new AuthenticationError(
-          `Unauthorized: ${getErrorMessage(error)}`,
-          getErrorCode(error),
-        ),
+        new AuthenticationError("Unauthorized: Invalid token", "TOKEN_INVALID"),
       );
     } else {
       next(

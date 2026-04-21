@@ -8,47 +8,50 @@ import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
-// "/api/v1/items" prefixes all below routes
+// get all items - all roles
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["manager", "employee", "user"] }),
+  itemController.getAllItems,
+);
 
-// get all items
-router.get("/", itemController.getAllItems);
-
-// get item by id
+// get item by id - all roles
 router.get(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["manager", "employee", "user"] }),
   validateRequest(itemSchemas.getItemById),
   itemController.getItemById,
 );
 
-// create item
+// create item - all roles
 router.post(
   "/",
-  upload.single("image"),
   authenticate,
   isAuthorized({ hasRole: ["manager", "employee", "user"] }),
+  upload.single("image"),
   validateRequest(itemSchemas.createItem),
   itemController.createItem,
 );
 
-// update item
+// update item - manager and employee only
 router.put(
   "/:id",
   authenticate,
   isAuthorized({
     hasRole: ["manager", "employee"],
-    allowSameUser: true,
   }),
   validateRequest(itemSchemas.updateItem),
   itemController.updateItem,
 );
 
-//delete item
+// delete item - manager only
 router.delete(
   "/:id",
   authenticate,
   isAuthorized({
-    hasRole: ["manager", "employee"],
-    allowSameUser: true,
+    hasRole: ["manager"],
   }),
   validateRequest(itemSchemas.deleteItem),
   itemController.deleteItem,
