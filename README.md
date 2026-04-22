@@ -10,17 +10,22 @@
 - The endpoints of this project:
   - Items:
     - Create item: POST /items
-    - View items: GET /items
-    - Update item: PUT /items
-    - Delete Item: DELETE /items
+    - View all items: GET /items
+    - View one item by id: GET /items/:id
+    - Update item: PUT /items/:id
+    - Delete Item: DELETE /items/:id
   - Locations:
     - Create locations: POST /locations
     - View locations: GET /locations
-    - Update locations: PUT /locations
-    - Delete locations: DELETE /locations
-  - Status (claimed, unclaimed):
-    - Get statuses: GET /status
-    - Update status (lost, found, claimed or unclaimed): PUT /status
+    - View one location by id: GET /locations/:id
+    - Update locations: PUT /locations/:id
+    - Delete locations: DELETE /locations/:id
+    - (advanced feature) View all items at location
+  - Location Contact:
+    - Create locationContact: POST /locationContacts
+    - View locationContacts: GET /locationContacts
+    - Update locationContact: PUT /locationContacts/:id
+    - Delete locationContact: DELETE /locationContacts/:id
 
 ### Course Content Alignment
 
