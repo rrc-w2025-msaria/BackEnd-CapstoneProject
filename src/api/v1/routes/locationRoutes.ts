@@ -7,11 +7,20 @@ import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
-// "/api/v1/locations" prefixes all below routes
-router.get("/", locationController.getAllLocations);
+// location can only be accessed by managers
+// get all locations
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["manager"] }),
+  locationController.getAllLocations,
+);
 
+// get location by id
 router.get(
   "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["manager"] }),
   validateRequest(locationSchemas.getLocationById),
   locationController.getLocationById,
 );
@@ -19,10 +28,7 @@ router.get(
 router.post(
   "/",
   authenticate,
-  isAuthorized({
-    hasRole: ["manager"],
-    allowSameUser: true,
-  }),
+  isAuthorized({ hasRole: ["manager"] }),
   validateRequest(locationSchemas.createLocation),
   locationController.createLocation,
 );
@@ -30,10 +36,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
-  isAuthorized({
-    hasRole: ["manager"],
-    allowSameUser: true,
-  }),
+  isAuthorized({ hasRole: ["manager"] }),
   validateRequest(locationSchemas.updateLocation),
   locationController.updateLocation,
 );
@@ -41,10 +44,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  isAuthorized({
-    hasRole: ["manager"],
-    allowSameUser: true,
-  }),
+  isAuthorized({ hasRole: ["manager"] }),
   validateRequest(locationSchemas.deleteLocation),
   locationController.deleteLocation,
 );

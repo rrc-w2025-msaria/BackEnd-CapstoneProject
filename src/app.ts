@@ -5,6 +5,7 @@ import path from "path";
 import itemRoutes from "./api/v1/routes/itemRoutes";
 import userRoutes from "./api/v1/routes/userRoutes";
 import managerRoutes from "./api/v1/routes/managerRoutes";
+import locationRoutes from "./api/v1/routes/locationRoutes";
 import errorHandler from "./api/v1/middleware/errorHandler";
 import {
   accessLogger,
@@ -72,6 +73,7 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/items", itemRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/manager", managerRoutes);
+app.use("/api/v1/locations", locationRoutes);
 
 // Route Imports END
 
