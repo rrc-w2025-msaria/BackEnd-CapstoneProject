@@ -13,7 +13,6 @@ import {
 
 const router: Router = express.Router();
 
-// full items CRUD access
 router.get(
   "/items",
   authenticate,

@@ -77,7 +77,7 @@ export const createLocationContact = async (
 };
 
 // update location contact
-export const updateLocation = async (
+export const updateLocationContact = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -107,7 +107,7 @@ export const updateLocation = async (
 };
 
 // delete location contact
-export const deleteLocatioContact = async (
+export const deleteLocationContact = async (
   req: Request,
   res: Response,
   next: NextFunction,

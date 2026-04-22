@@ -6,6 +6,8 @@ import itemRoutes from "./api/v1/routes/itemRoutes";
 import userRoutes from "./api/v1/routes/userRoutes";
 import managerRoutes from "./api/v1/routes/managerRoutes";
 import locationRoutes from "./api/v1/routes/locationRoutes";
+import locationContactRoutes from "./api/v1/routes/locationContactRoutes";
+
 import errorHandler from "./api/v1/middleware/errorHandler";
 import {
   accessLogger,
@@ -35,10 +37,6 @@ interface HealthCheckResponse {
   version: string;
 }
 // Middleware START
-
-app.use(accessLogger);
-app.use(errorLogger);
-app.use(consoleLogger);
 
 // Ensures incoming body is correctly parsed to JSON, otherwise req.body would be undefined
 app.use(express.json());
@@ -74,6 +72,7 @@ app.use("/api/v1/items", itemRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/manager", managerRoutes);
 app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/locationContacts", locationContactRoutes);
 
 // Route Imports END
 
