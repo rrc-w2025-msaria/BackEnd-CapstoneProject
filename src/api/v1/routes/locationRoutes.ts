@@ -7,15 +7,15 @@ import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
-// get all locations
+// get all locations - all roles
 router.get(
   "/",
   authenticate,
-  isAuthorized({ hasRole: ["manager"] }),
+  isAuthorized({ hasRole: ["manager", "employee", "user"] }),
   locationController.getAllLocations,
 );
 
-// get location by id
+// get location by id - manager only
 router.get(
   "/:id",
   authenticate,
@@ -24,16 +24,16 @@ router.get(
   locationController.getLocationById,
 );
 
-// create location
+// create location - for all roles
 router.post(
   "/",
   authenticate,
-  isAuthorized({ hasRole: ["manager"] }),
+  isAuthorized({ hasRole: ["manager", "employee", "user"] }),
   validateRequest(locationSchemas.createLocation),
   locationController.createLocation,
 );
 
-// update location
+// update location - manager only
 router.put(
   "/:id",
   authenticate,
@@ -42,7 +42,7 @@ router.put(
   locationController.updateLocation,
 );
 
-// delete location
+// delete location - manager only
 router.delete(
   "/:id",
   authenticate,
