@@ -9,5 +9,5 @@ export interface Item {
   contactInfo: string;
   createdAt: string;
   updatedAt?: string; // this is an optional part, used in updateItem
-  imageUrl?: string;
+  image?: string;
 }
