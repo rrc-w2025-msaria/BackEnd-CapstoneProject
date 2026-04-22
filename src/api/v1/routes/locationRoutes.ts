@@ -7,7 +7,6 @@ import isAuthorized from "../middleware/authorize";
 
 const router: Router = express.Router();
 
-// location can only be accessed by managers
 // get all locations
 router.get(
   "/",
@@ -25,6 +24,7 @@ router.get(
   locationController.getLocationById,
 );
 
+// create location
 router.post(
   "/",
   authenticate,
@@ -33,6 +33,7 @@ router.post(
   locationController.createLocation,
 );
 
+// update location
 router.put(
   "/:id",
   authenticate,
@@ -41,6 +42,7 @@ router.put(
   locationController.updateLocation,
 );
 
+// delete location
 router.delete(
   "/:id",
   authenticate,
