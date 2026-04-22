@@ -1,3 +1,4 @@
+import { getLocationById } from "./locationService";
 import {
   QuerySnapshot,
   DocumentData,
@@ -73,6 +74,16 @@ export const createItem = async (itemData: {
   contactInfo: string;
   imageUrl?: string; // this is optional, if image can be provided
 }): Promise<Item> => {
+  // ensures that the locationId exists
+  try {
+    await getLocationById(itemData.locationId);
+  } catch (error) {
+    throw new NotFoundError(
+      "Invalid locationId: Location does not exist",
+      "LOCATION_NOT_FOUND",
+    );
+  }
+
   const dateNow = new Date().toISOString();
 
   const newItem: any = {
