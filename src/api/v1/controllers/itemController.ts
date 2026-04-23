@@ -126,3 +126,21 @@ export const deleteItem = async (
     next(error);
   }
 };
+
+// advanced feature: get items fom a specific location
+export const getItemsByLocationId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+
+    const items: Item[] = await itemService.getItemsByLocationId(id);
+    res
+      .status(HTTP_STATUS.OK)
+      .json(successResponse(items, "Items at location retrieved successfully"));
+  } catch (error: unknown) {
+    next(error);
+  }
+};
