@@ -63,12 +63,10 @@ export const getLocationById = async (id: string): Promise<Location> => {
  * @returns The created loan with generated ID
  */
 export const createLocation = async (
-  id: string,
   name: string,
   address: string,
 ): Promise<Location> => {
   const newLocation: Partial<Location> = {
-    id,
     name,
     address,
   };
@@ -78,14 +76,17 @@ export const createLocation = async (
     newLocation,
   );
 
-  return structuredClone({ id: locationId, ...newLocation } as Location);
+  return {
+    id: locationId,
+    name,
+    address,
+  };
 };
 
 export const updateLocation = async (
   id: string,
   address: string,
 ): Promise<Location> => {
-  // check if the location exists before updating
   const location: Location = await getLocationById(id);
   const updatedLocation: Location = {
     ...location,

@@ -1,16 +1,19 @@
 // import the express application and type definition
 import express, { Express } from "express";
+import path from "path";
 
 import itemRoutes from "./api/v1/routes/itemRoutes";
+import userRoutes from "./api/v1/routes/userRoutes";
+import managerRoutes from "./api/v1/routes/managerRoutes";
 import locationRoutes from "./api/v1/routes/locationRoutes";
+import locationContactRoutes from "./api/v1/routes/locationContactRoutes";
+
 import errorHandler from "./api/v1/middleware/errorHandler";
 import {
   accessLogger,
   errorLogger,
   consoleLogger,
 } from "./api/v1/middleware/logger";
-
-// dotenv.config();
 
 // initialize the express application
 const app: Express = express();
@@ -35,12 +38,11 @@ interface HealthCheckResponse {
 }
 // Middleware START
 
-app.use(accessLogger);
-app.use(errorLogger);
-app.use(consoleLogger);
-
 // Ensures incoming body is correctly parsed to JSON, otherwise req.body would be undefined
 app.use(express.json());
+
+// for file upload
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Middleware END
 
@@ -67,7 +69,10 @@ app.get("/api/v1/health", (req, res) => {
 // Route Imports START
 // "/api/v1/items" will prefix all item routes
 app.use("/api/v1/items", itemRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/manager", managerRoutes);
 app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/locationContacts", locationContactRoutes);
 
 // Route Imports END
 

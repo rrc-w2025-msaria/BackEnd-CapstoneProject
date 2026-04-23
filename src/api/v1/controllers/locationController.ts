@@ -56,10 +56,9 @@ export const createLocation = async (
     // Extract only the fields we want (destructuring)
     // const name: string = req.body.name;
     // const description: string = req.body.description;
-    const { id, name, address } = req.body;
+    const { name, address } = req.body;
 
     const newLocation: Location = await locationService.createLocation(
-      id,
       name,
       address,
     );

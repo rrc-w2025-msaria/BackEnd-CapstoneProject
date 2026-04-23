@@ -70,6 +70,7 @@ export const createItem = async (
       .status(HTTP_STATUS.CREATED)
       .json(successResponse(newItem, "Item created successfully"));
   } catch (error: unknown) {
+    console.error("CREATE ITEM ERROR:", error);
     next(error);
   }
 };
