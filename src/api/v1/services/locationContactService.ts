@@ -41,7 +41,10 @@ export const getLocationContactById = async (
   const doc: DocumentSnapshot | null = await getDocumentById(COLLECTION, id);
 
   if (!doc) {
-    throw new NotFoundError("Location not found", "LOCATION_NOT_FOUND");
+    throw new NotFoundError(
+      "Location Contact not found",
+      "LOCATION_CONTACT_NOT_FOUND",
+    );
   }
 
   const data: DocumentData | undefined = doc.data();
@@ -59,6 +62,13 @@ export const createLocationContact = async (
   contactName: string,
   email: string,
 ): Promise<LocationContact> => {
+  const locationDoc = await getDocumentById("locations", locationId);
+
+  if (!locationDoc) {
+    // when locationId does not exists when attemping to create contact
+    throw new NotFoundError("Location does not exist", "LOCATION_NOT_FOUND");
+  }
+
   const newLocationContact: Partial<LocationContact> = {
     locationId,
     contactName,
@@ -95,11 +105,6 @@ export const updateLocationContact = async (
 
 // delete location contact
 export const deleteLocationContact = async (id: string): Promise<void> => {
-  // check if the location exists before deleting
-  const locationContact: LocationContact = await getLocationContactById(id);
-  if (!locationContact) {
-    throw new NotFoundError("Location not found", "LOCATION_NOT_FOUND");
-  }
-
+  await getLocationContactById(id);
   await deleteDocument(COLLECTION, id);
 };

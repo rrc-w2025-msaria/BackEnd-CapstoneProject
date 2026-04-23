@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import * as locationContactService from "../services/locationContactService";
-import { Location } from "../models/locationModel";
-import { successResponse } from "../models/responseModel";
 import { LocationContact } from "../models/locationContactModel";
+import { successResponse } from "../models/responseModel";
 
 // get all location contacts
 export const getAllLocationContacts = async (

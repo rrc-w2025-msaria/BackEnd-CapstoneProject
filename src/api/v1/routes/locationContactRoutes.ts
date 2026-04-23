@@ -22,7 +22,7 @@ router.get(
 );
 
 router.get(
-  "/:locationId",
+  "/:id",
   authenticate,
   isAuthorized({ hasRole: ["user", "employee", "manager"] }),
   getLocationContactById,
