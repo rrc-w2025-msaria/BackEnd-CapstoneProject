@@ -1,7 +1,9 @@
 // import the express application and type definition
 import express, { Express } from "express";
 import path from "path";
+import helmet from "helmet";
 import dotenv from "dotenv";
+import { getHelmetConfig } from "./config/helmetConfig";
 
 // Load environment variables BEFORE your internal imports!
 dotenv.config();
@@ -22,6 +24,10 @@ import {
 
 // initialize the express application
 const app: Express = express();
+
+// Apply Helmet's security headers
+app.use(helmet());
+app.use(getHelmetConfig());
 
 // Logging middleware (should be applied early in the middleware stack)
 if (process.env.NODE_ENV === "production") {
