@@ -25,7 +25,7 @@ const router: Router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/validations/Locations'
+ *                 $ref: '#/components/schemas/Location'
  */
 router.get(
   "/",
@@ -38,7 +38,7 @@ router.get(
 /**
  * @openapi
  * /locations/{id}/items:
- *  get:
+ *   get:
  *    summary: Retrieve all items at a specific location
  *    tags: [Locations]
  *    security:
@@ -56,11 +56,13 @@ router.get(
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/validations/Location'
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Item'
  *      404:
  *        description: Location not found
  *      403:
- *        description: Not authorized to update this location
+ *        description: Not authorized to view items at this location
  */
 router.get(
   "/:id/items",
@@ -72,7 +74,7 @@ router.get(
 // get location by id - manager only
 /**
  * @openapi
- * /locations/{id}
+ * /locations/{id}:
  *  get:
  *    summary: Retrieve a location by ID
  *    tags: [Locations]
@@ -81,6 +83,7 @@ router.get(
  *    parameters:
  *      - name: id
  *        in: path
+ *        required: true
  *        schema:
  *          type: string
  *    responses:
@@ -103,7 +106,7 @@ router.get(
  * /locations:
  *   post:
  *     summary: Creates a new Location
- *     tags: [Location]
+ *     tags: [Locations]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -128,7 +131,7 @@ router.get(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Location'
+ *               $ref: '#/components/schemas/Location'
  *       400:
  *         description: Invalid input data
  */
@@ -147,7 +150,7 @@ router.post(
  * /locations/{id}:
  *   put:
  *     summary: Update a location's address
- *     tags: [Location]
+ *     tags: [Locations]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -162,17 +165,17 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/validations/Location'
+ *             type: object
  *             properties:
- *             address:
- *               type: string
+ *               address:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Location updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Location'
+ *               $ref: '#/components/schemas/Location'
  *       404:
  *         description: Location not found
  *       403:
@@ -208,7 +211,7 @@ router.put(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Location'
+ *               $ref: '#/components/schemas/Location'
  *       404:
  *         description: Location not found
  *       403:

@@ -25,7 +25,7 @@ const router: Router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/validations/Item'
+ *                 $ref: '#/components/schemas/Item'
  */
 router.get(
   "/",
@@ -37,8 +37,8 @@ router.get(
 // get item by id - all roles
 /**
  * @openapi
- * /items/{id}
- *  get:
+ * /items/{id}:
+ *   get:
  *    summary: Retrieve an item by ID
  *    tags: [Items]
  *    security:
@@ -104,7 +104,7 @@ router.get(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Item'
+ *               $ref: '#/components/schemas/Item'
  *       400:
  *         description: Invalid input data
  */
@@ -138,18 +138,18 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/validations/Item'
+ *             type: object
  *             properties:
- *             status:
- *               type: string
- *               enum: [lost, found, claimed]
+ *               status:
+ *                 type: string
+ *                 enum: [lost, found, claimed]
  *     responses:
  *       200:
  *         description: Item updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Item'
+ *               $ref: '#/components/schemas/Item'
  *       404:
  *         description: Item not found
  *       403:
@@ -170,7 +170,7 @@ router.put(
  * @openapi
  * /items/{id}:
  *   delete:
- *     summary: Update a specific item's information
+ *     summary: Delete a an item
  *     tags: [Items]
  *     security:
  *       - bearerAuth: []
@@ -187,7 +187,7 @@ router.put(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Item'
+ *               $ref: '#/components/schemas/Item'
  *       404:
  *         description: Item not found
  *       403:

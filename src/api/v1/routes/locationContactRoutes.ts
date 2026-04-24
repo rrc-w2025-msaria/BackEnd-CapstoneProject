@@ -30,7 +30,7 @@ const router: Router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/validations/LocationContact'
+ *                 $ref: '#/components/schemas/LocationContact'
  */
 router.get(
   "/",
@@ -41,7 +41,7 @@ router.get(
 
 /**
  * @openapi
- * /locationContacts/{id}
+ * /locationContacts/{id}:
  *  get:
  *    summary: Retrieve an location contact by ID
  *    tags: [LocationContacts]
@@ -71,7 +71,7 @@ router.get(
  * /locationContacts:
  *   post:
  *     summary: Creates a new location contact
- *     tags: [Items]
+ *     tags: [LocationContacts]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -81,12 +81,13 @@ router.get(
  *           schema:
  *             type: object
  *             required:
- *               - name
- *               - description
+ *               - locationId
+ *               - contactName
+ *               - email
  *             properties:
  *               locationId:
  *                 type: string
- *               name:
+ *               contactName:
  *                 type: string
  *               email:
  *                 type: string
@@ -96,7 +97,7 @@ router.get(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/LocationContact'
+ *               $ref: '#/components/schemas/LocationContact'
  *       400:
  *         description: Invalid input data
  *       403:
@@ -112,7 +113,7 @@ router.post(
 
 /**
  * @openapi
- * /locationContact/{id}:
+ * /locationContacts/{id}:
  *   put:
  *     summary: Update a specific location contact
  *     tags: [LocationContacts]
@@ -130,7 +131,7 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/validations/LocationContacts'
+ *             type: object
  *             properties:
  *             locationId:
  *               type: string
@@ -144,9 +145,9 @@ router.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/Item'
+ *               $ref: '#/components/schemas/LocationContact'
  *       404:
- *         description: Locationt not found
+ *         description: Location not found
  *       403:
  *         description: Not authorized to update this contact
  */
@@ -159,9 +160,9 @@ router.put(
 
 /**
  * @openapi
- * /locationContact/{id}:
+ * /locationContacts/{id}:
  *   delete:
- *     summary: Update a specific location contact
+ *     summary: Deelte a specific location contact
  *     tags: [LocationContacts]
  *     security:
  *       - bearerAuth: []
@@ -178,7 +179,7 @@ router.put(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/validations/LocationContact'
+ *               $ref: '#/components/schemas/LocationContact'
  *       404:
  *         description: Location Contact not found
  *       403:
