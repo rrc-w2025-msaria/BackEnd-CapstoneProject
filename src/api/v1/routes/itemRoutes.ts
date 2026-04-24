@@ -169,7 +169,7 @@ router.put(
 /**
  * @openapi
  * /items/{id}:
- *   put:
+ *   delete:
  *     summary: Update a specific item's information
  *     tags: [Items]
  *     security:

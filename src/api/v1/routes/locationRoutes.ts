@@ -190,7 +190,7 @@ router.put(
 /**
  * @openapi
  * /locations/{id}:
- *   put:
+ *   delete:
  *     summary: Delete this location
  *     tags: [Locations]
  *     security:
