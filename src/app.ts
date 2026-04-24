@@ -1,5 +1,6 @@
 // import the express application and type definition
 import express, { Express } from "express";
+import setupSwagger from "./config/swagger";
 import path from "path";
 import helmet from "helmet";
 import cors from "cors";
@@ -10,7 +11,6 @@ import getCorsOptions from "./config/corsConfig";
 // Load environment variables BEFORE your internal imports!
 dotenv.config();
 
-import setupSwagger from "../config/swagger";
 import itemRoutes from "./api/v1/routes/itemRoutes";
 import userRoutes from "./api/v1/routes/userRoutes";
 import managerRoutes from "./api/v1/routes/managerRoutes";
@@ -92,6 +92,9 @@ app.use("/api/v1/locations", locationRoutes);
 app.use("/api/v1/locationContacts", locationContactRoutes);
 
 // Route Imports END
+
+// Setup Swagger
+setupSwagger(app);
 
 // needs to be used last
 app.use(errorHandler);
