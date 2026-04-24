@@ -142,3 +142,28 @@ export const deleteItem = async (id: string): Promise<void> => {
 
   await deleteDocument(COLLECTION, id);
 };
+
+// advanced feature added: get all items at a specific location
+export const getItemsByLocationId = async (id: string): Promise<Item[]> => {
+  try {
+    await getLocationById(id);
+
+    const snapshot: QuerySnapshot = await getDocuments(COLLECTION);
+
+    const items: Item[] = snapshot.docs
+      .map((doc) => {
+        const data: DocumentData = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt:
+            data.createdAt?.toDate?.()?.toISOString?.() ?? data.createdAt,
+        } as Item;
+      })
+      .filter((item) => item.locationId === id);
+
+    return items;
+  } catch (error: unknown) {
+    throw error;
+  }
+};

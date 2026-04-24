@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import { validateRequest } from "../middleware/validate";
 import { locationSchemas } from "../validations/locationValidation";
 import * as locationController from "../controllers/locationController";
+import { getItemsByLocationId } from "../controllers/itemController";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 
@@ -13,6 +14,14 @@ router.get(
   authenticate,
   isAuthorized({ hasRole: ["manager", "employee", "user"] }),
   locationController.getAllLocations,
+);
+
+// get all items from a specific location
+router.get(
+  "/:id/items",
+  authenticate,
+  isAuthorized({ hasRole: ["user", "employee", "manager"] }),
+  getItemsByLocationId,
 );
 
 // get location by id - manager only
