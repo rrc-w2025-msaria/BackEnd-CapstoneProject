@@ -3,9 +3,8 @@ import Joi from "joi";
 export const itemSchemas = {
   createItem: {
     body: Joi.object({
-      name: Joi.string().min(2).max(50).required().messages({
+      name: Joi.string().required().messages({
         "string.empty": "Name is required",
-        "string.min": "Name must be at least 2 characters",
       }),
 
       description: Joi.string().required().messages({
@@ -47,7 +46,7 @@ export const itemSchemas = {
         .valid("lost", "found", "claimed")
         .required()
         .messages({
-          "any.only": "Status must be lost, found, or claimed",
+          "any.only": "Status must be one of lost, found, or claimed",
         }),
     }),
   },
