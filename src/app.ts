@@ -2,8 +2,10 @@
 import express, { Express } from "express";
 import path from "path";
 import helmet from "helmet";
+import cors from "cors";
 import dotenv from "dotenv";
 import { getHelmetConfig } from "./config/helmetConfig";
+import getCorsOptions from "./config/corsConfig";
 
 // Load environment variables BEFORE your internal imports!
 dotenv.config();
@@ -28,6 +30,10 @@ const app: Express = express();
 // Apply Helmet's security headers
 app.use(helmet());
 app.use(getHelmetConfig());
+
+// Configure CORS
+app.use(cors());
+app.use(cors(getCorsOptions()));
 
 // Logging middleware (should be applied early in the middleware stack)
 if (process.env.NODE_ENV === "production") {
