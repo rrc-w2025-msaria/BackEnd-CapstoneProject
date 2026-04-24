@@ -25,7 +25,6 @@ describe("Location Service", () => {
 
     // act
     const result = await locationService.createLocation(
-      mockLocationData.id,
       mockLocationData.name,
       mockLocationData.address,
     );
