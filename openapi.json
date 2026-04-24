@@ -1,0 +1,890 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Lost and Found API Documentation",
+    "version": "1.0.0",
+    "description": "This is the API documentation for the Lost and Found API."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Item": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status",
+          "contactInfo"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for an item",
+            "example": "item_abc123"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the item",
+            "example": "water bottle"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the item",
+            "example": "Pink nike water bottle"
+          },
+          "locationId": {
+            "type": "number",
+            "description": "ID of the location it was found/lost",
+            "example": "wtYWq0CQI1l3rN3K1kAA"
+          },
+          "status": {
+            "type": "string",
+            "description": "current status of the item",
+            "enum": [
+              "lost",
+              "found",
+              "claimed"
+            ],
+            "example": "lost"
+          },
+          "contactInfo": {
+            "type": "string",
+            "description": "Contact information of the person who submitted the item",
+            "example": "user@email.com"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "optional image upload of the item",
+            "example": "/uploads/image.jpg"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the item was created",
+            "example": "2024-01-20T14:45:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the item was last updated",
+            "example": "2024-01-20T14:45:00Z"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error type or code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "The name field is required"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "example": "name"
+                },
+                "issue": {
+                  "type": "string",
+                  "example": "must be a valid string"
+                }
+              }
+            },
+            "description": "Detailed validation errors (optional)"
+          }
+        }
+      },
+      "LocationContact": {
+        "type": "object",
+        "required": [
+          "id",
+          "locationId",
+          "contactName",
+          "email"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for an item",
+            "example": "item_abc123"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "Id of the location associated with the contact person",
+            "example": "wtYWq0CQI1l3rN3K1kAA"
+          },
+          "contactName": {
+            "type": "string",
+            "description": "Name of the contact person",
+            "example": "Marylen Saria"
+          },
+          "email": {
+            "type": "string",
+            "description": "email of the contact person",
+            "example": "marylen@lostandfound.com"
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "address"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for an item",
+            "example": "item_abc123"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the location",
+            "example": "Gym"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of the location",
+            "example": "123 Main St"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/items": {
+      "get": {
+        "summary": "Retrieve a list of all items",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new item",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "description"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Item Name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Item Description"
+                  },
+                  "locationId": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "lost",
+                      "found",
+                      "claimed"
+                    ],
+                    "example": "lost"
+                  },
+                  "contactInfo": {
+                    "type": "string",
+                    "example": "(204) 123-4567"
+                  },
+                  "image": {
+                    "type": "file"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      }
+    },
+    "/items/{id}": {
+      "get": {
+        "summary": "Retrieve an item by ID",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "item retrieved successfully"
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a specific item's information",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the item"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "lost",
+                      "found",
+                      "claimed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to update this item"
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a an item",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the item"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to delete this item"
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      }
+    },
+    "/locationContacts": {
+      "get": {
+        "summary": "Retrieve a list of all location contacts",
+        "tags": [
+          "LocationContacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LocationContact"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new location contact",
+        "tags": [
+          "LocationContacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "locationId",
+                  "contactName",
+                  "email"
+                ],
+                "properties": {
+                  "locationId": {
+                    "type": "string"
+                  },
+                  "contactName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Location contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationContact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "403": {
+            "description": "Not authorized to create contact"
+          }
+        }
+      }
+    },
+    "/locationContacts/{id}": {
+      "get": {
+        "summary": "Retrieve an location contact by ID",
+        "tags": [
+          "LocationContacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location contact retrieved successfully"
+          },
+          "404": {
+            "description": "Location contact not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a specific location contact",
+        "tags": [
+          "LocationContacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the contact"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": null,
+                "locationId": {
+                  "type": "string"
+                },
+                "contactName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "locationId": {
+                      "type": "string"
+                    },
+                    "contactName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to update this contact"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deelte a specific location contact",
+        "tags": [
+          "LocationContacts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the contact"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationContact"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to delete this location contact"
+          },
+          "404": {
+            "description": "Location Contact not found"
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "summary": "Retrieve a list of all locations",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Locations retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new Location",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "address"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Item Name"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "123 Address Street"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Location created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      }
+    },
+    "/locations/{id}/items": {
+      "get": {
+        "summary": "Retrieve all items at a specific location",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the location",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items at location retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to view items at this location"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      }
+    },
+    "/locations/{id}": {
+      "get": {
+        "summary": "Retrieve a location by ID",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location retrieved successfully"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a location's address",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the Location"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to update this location"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete this location",
+        "tags": [
+          "Locations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The unique identifier of the Location"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to delete this location"
+          },
+          "404": {
+            "description": "Location not found"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
