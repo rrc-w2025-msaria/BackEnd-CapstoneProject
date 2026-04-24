@@ -12,10 +12,9 @@ const swaggerOptions: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Task Management API Documentation",
+      title: "Lost and Found API Documentation",
       version: "1.0.0",
-      description:
-        "This is the API documentation for the Task Management application.",
+      description: "This is the API documentation for the Lost and Found API.",
     },
     servers: [
       {

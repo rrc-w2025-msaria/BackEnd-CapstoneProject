@@ -145,7 +145,14 @@ router.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/LocationContact'
+ *               type: object
+ *               properties:
+ *                 locationId:
+ *                   type: string
+ *                 contactName:
+ *                   type: string
+ *                 email:
+ *                   type: string
  *       404:
  *         description: Location not found
  *       403:
