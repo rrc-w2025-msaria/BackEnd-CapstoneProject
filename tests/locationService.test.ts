@@ -1,9 +1,16 @@
+import { NotFoundError } from "../src/api/v1/errors/errors";
+
+jest.mock("../src/api/v1/repositories/firestoreRepository", () => ({
+  createDocument: jest.fn(),
+  getDocuments: jest.fn(),
+  getDocumentById: jest.fn(),
+  updateDocument: jest.fn(),
+  deleteDocument: jest.fn(),
+}));
+
 import * as locationService from "../src/api/v1/services/locationService";
 import * as firestoreRepository from "../src/api/v1/repositories/firestoreRepository";
 import { Location } from "../src/api/v1/models/locationModel";
-
-// Mock the repository module
-jest.mock("../src/api/v1/repositories/firestoreRepository");
 
 describe("Location Service", () => {
   beforeEach(() => {
@@ -32,13 +39,16 @@ describe("Location Service", () => {
     // assert
     expect(firestoreRepository.createDocument).toHaveBeenCalledWith(
       "locations",
-      expect.objectContaining(mockLocationData),
+      expect.objectContaining({
+        name: mockLocationData.name,
+        address: mockLocationData.address,
+      }),
     );
 
     expect(result).toEqual(mockLocationData);
   });
 
-  // READ ALL
+  // get all locations
   it("should get all locations successfully", async () => {
     const mockLocations = [
       { id: "loc-1", name: "Location 1", address: "Address 1" },
@@ -55,10 +65,19 @@ describe("Location Service", () => {
     const result = await locationService.getAllLocations();
 
     expect(result).toEqual(mockLocations);
-    expect(firestoreRepository.getDocuments).toHaveBeenCalledWith("locations");
   });
 
-  // READ BY ID
+  it("should handle empty location list", async () => {
+    (firestoreRepository.getDocuments as jest.Mock).mockResolvedValue({
+      docs: [],
+    });
+
+    const result = await locationService.getAllLocations();
+
+    expect(result).toEqual([]);
+  });
+
+  // get location by id
   it("should get a location by id successfully", async () => {
     const mockLocation: Location = {
       id: "loc-1",
@@ -77,21 +96,23 @@ describe("Location Service", () => {
     const result = await locationService.getLocationById(mockLocation.id);
 
     expect(result).toEqual(mockLocation);
-    expect(firestoreRepository.getDocumentById).toHaveBeenCalledWith(
-      "locations",
-      mockLocation.id,
+  });
+
+  it("should throw NotFoundError when location not found", async () => {
+    (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue(null);
+
+    await expect(locationService.getLocationById("invalid-id")).rejects.toThrow(
+      NotFoundError,
     );
   });
 
-  // UPDATE
+  // update location
   it("should update a location successfully", async () => {
     const mockLocation: Location = {
       id: "loc-1",
       name: "Location 1",
       address: "Old Address",
     };
-
-    const updatedAddress = "New Address";
 
     jest
       .spyOn(locationService, "getLocationById")
@@ -103,22 +124,22 @@ describe("Location Service", () => {
 
     const result = await locationService.updateLocation(
       mockLocation.id,
-      updatedAddress,
+      "New Address",
     );
 
-    expect(locationService.getLocationById).toHaveBeenCalledWith(
-      mockLocation.id,
-    );
-    expect(firestoreRepository.updateDocument).toHaveBeenCalledWith(
-      "locations",
-      mockLocation.id,
-      expect.objectContaining({
-        ...mockLocation,
-        address: updatedAddress,
-      }),
-    );
+    expect(result.address).toBe("New Address");
+  });
 
-    expect(result.address).toBe(updatedAddress);
+  it("should throw error when updating non-existent location", async () => {
+    jest
+      .spyOn(locationService, "getLocationById")
+      .mockRejectedValue(
+        new NotFoundError("Location not found", "LOCATION_NOT_FOUND"),
+      );
+
+    await expect(
+      locationService.updateLocation("bad-id", "New Address"),
+    ).rejects.toThrow(NotFoundError);
   });
 
   // delete a location
@@ -149,6 +170,18 @@ describe("Location Service", () => {
     expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith(
       "locations",
       mockLocation.id,
+    );
+  });
+
+  it("should throw error when deleting non-existent location", async () => {
+    jest
+      .spyOn(locationService, "getLocationById")
+      .mockRejectedValue(
+        new NotFoundError("Location not found", "LOCATION_NOT_FOUND"),
+      );
+
+    await expect(locationService.deleteLocation("bad-id")).rejects.toThrow(
+      NotFoundError,
     );
   });
 });

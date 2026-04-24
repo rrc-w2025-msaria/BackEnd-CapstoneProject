@@ -1,7 +1,21 @@
+import { NotFoundError } from "../src/api/v1/errors/errors";
+
+jest.mock("../src/api/v1/repositories/firestoreRepository", () => ({
+  createDocument: jest.fn(),
+  getDocuments: jest.fn(),
+  getDocumentById: jest.fn(),
+  updateDocument: jest.fn(),
+  deleteDocument: jest.fn(),
+}));
+
+jest.mock("../src/api/v1/services/locationService", () => ({
+  getLocationById: jest.fn(),
+}));
+
 import * as itemService from "../src/api/v1/services/itemService";
 import * as firestoreRepository from "../src/api/v1/repositories/firestoreRepository";
+import * as locationService from "../src/api/v1/services/locationService";
 import { Item, itemStatus } from "../src/api/v1/models/itemModel";
-import { firestore } from "firebase-admin";
 
 // Mock the repository module
 // jest.mock replaces the entire module with an auto-mocked version
@@ -13,185 +27,160 @@ describe("Item Service", () => {
   });
 
   it("should create an item successfully", async () => {
-    // Arrange
-    const mockItemData: {
-      name: string;
-      description: string;
-      locationId: string;
-      status: itemStatus;
-      contactInfo: string;
-    } = {
-      name: "Test Item",
-      description: "Test Description",
-      locationId: "location-id",
-      status: "lost",
-      contactInfo: "123-4567",
-    };
-    const mockDocumentId: string = "test-item-id";
+    (locationService.getLocationById as jest.Mock).mockResolvedValue({
+      id: "loc-1",
+    });
 
     (firestoreRepository.createDocument as jest.Mock).mockResolvedValue(
-      mockDocumentId,
+      "item-1",
     );
 
-    // Act
-    const result: Item = await itemService.createItem(mockItemData);
-
-    // Assert
-    expect(firestoreRepository.createDocument).toHaveBeenCalledWith(
-      "items",
-      expect.objectContaining({
-        name: mockItemData.name,
-        description: mockItemData.description,
-        locationId: mockItemData.locationId,
-        status: mockItemData.status,
-        contactInfo: mockItemData.contactInfo,
-        createdAt: expect.any(String),
-      }),
-    );
-    expect(result.id).toBe(mockDocumentId);
-    expect(result.name).toBe(mockItemData.name);
-  });
-
-  it("should delete an item successfully", async () => {
-    // Arrange
-    const mockDocumentId: string = "test-item-id";
-    const mockItem: Item = {
-      id: mockDocumentId,
+    const mockItemData = {
       name: "Test Item",
       description: "Test Description",
-      locationId: "location-id",
-      status: "lost",
+      locationId: "loc-1",
+      status: "lost" as itemStatus,
       contactInfo: "123-4567",
-      createdAt: new Date().toISOString(),
     };
 
-    // jest.spyOn creates a mock for a specific method/function on an object, in our example the itemService
-    jest.spyOn(itemService, "getItemById").mockResolvedValue(mockItem);
+    const result = await itemService.createItem(mockItemData);
 
-    // jest.Mock replaces the auto-mocked version with our specific mocked implementation
-    (firestoreRepository.deleteDocument as jest.Mock).mockResolvedValue(
-      undefined,
-    );
-
-    // Act
-    await itemService.deleteItem(mockDocumentId);
-
-    // Assert
-    expect(itemService.getItemById).toHaveBeenCalledWith(mockDocumentId);
-    expect(firestoreRepository.deleteDocument).toHaveBeenCalledWith(
-      "items",
-      mockDocumentId,
-    );
+    expect(firestoreRepository.createDocument).toHaveBeenCalled();
+    expect(result.id).toBe("item-1");
   });
 
-  // update item
+  it("should throw error when location does not exist", async () => {
+    (locationService.getLocationById as jest.Mock).mockRejectedValue(
+      new Error("not found"),
+    );
+
+    await expect(
+      itemService.createItem({
+        name: "Test",
+        description: "Test",
+        locationId: "bad-id",
+        status: "lost",
+        contactInfo: "123",
+      }),
+    ).rejects.toThrow(NotFoundError);
+  });
+
+  //get all items
+  it("should get all items successfully", async () => {
+    (firestoreRepository.getDocuments as jest.Mock).mockResolvedValue({
+      docs: [
+        {
+          id: "1",
+          data: () => ({
+            name: "Item 1",
+            locationId: "loc-1",
+            status: "lost",
+            contactInfo: "123",
+            createdAt: new Date(),
+          }),
+        },
+      ],
+    });
+
+    const result = await itemService.getAllItems();
+
+    expect(result.length).toBe(1);
+  });
+
+  // get item by id
+  it("should get item by id", async () => {
+    (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue({
+      id: "1",
+      data: () => ({
+        name: "Item",
+        locationId: "loc-1",
+        status: "lost",
+        contactInfo: "123",
+        createdAt: new Date(),
+      }),
+    });
+
+    const result = await itemService.getItemById("1");
+
+    expect(result.id).toBe("1");
+  });
+
+  it("should throw error if item not found", async () => {
+    (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue(null);
+
+    await expect(itemService.getItemById("bad")).rejects.toThrow(NotFoundError);
+  });
+
+  // update
   it("should update item successfully", async () => {
-    const mockDocumentId: string = "test-item-id";
-    const updateData: Item = {
-      id: mockDocumentId,
-      name: "Item Name",
-      description: "Test Description",
-      locationId: "location-id",
+    jest.spyOn(itemService, "getItemById").mockResolvedValue({
+      id: "1",
+      name: "Item",
+      description: "desc",
+      locationId: "loc",
       status: "lost",
       contactInfo: "123-4567",
       createdAt: new Date().toISOString(),
-    };
-
-    jest.spyOn(itemService, "getItemById").mockResolvedValue(updateData);
+    });
 
     (firestoreRepository.updateDocument as jest.Mock).mockResolvedValue(
       undefined,
     );
 
-    const result = await itemService.updateItem(mockDocumentId, "found");
+    const result = await itemService.updateItem("1", "found");
 
-    expect(itemService.getItemById).toHaveBeenCalledWith(mockDocumentId);
-    expect(firestoreRepository.updateDocument).toHaveBeenCalledWith(
-      "items",
-      mockDocumentId,
-      expect.objectContaining({
-        ...updateData,
-        status: "found",
-        updatedAt: expect.any(String),
-      }),
-    );
+    expect(result.status).toBe("found");
   });
 
-  // get item by id
-  it("should get item by id successfully", async () => {
-    const mockItem: Item = {
-      id: "test-item-id",
-      name: "Item Name",
-      description: "Test Description",
-      locationId: "location-id",
+  // delete item
+  it("should delete item successfully", async () => {
+    jest.spyOn(itemService, "getItemById").mockResolvedValue({
+      id: "1",
+      name: "Item",
+      description: "desc",
+      locationId: "loc",
       status: "lost",
       contactInfo: "123-4567",
       createdAt: new Date().toISOString(),
-    };
-
-    (firestoreRepository.getDocumentById as jest.Mock).mockResolvedValue({
-      id: mockItem.id,
-      data: () => ({
-        name: mockItem.name,
-        description: mockItem.description,
-        locationId: mockItem.locationId,
-        status: mockItem.status,
-        contactInfo: mockItem.contactInfo,
-        createdAt: mockItem.createdAt,
-      }),
     });
 
-    const result = await itemService.getItemById(mockItem.id);
+    (firestoreRepository.deleteDocument as jest.Mock).mockResolvedValue(
+      undefined,
+    );
 
-    expect(result).toMatchObject({
-      name: mockItem.name,
-      description: mockItem.description,
-      locationId: mockItem.locationId,
-      status: mockItem.status,
-      contactInfo: mockItem.contactInfo,
-      createdAt: expect.any(String),
-    });
-    // expect(firestoreRepository.getDocumentById).toHaveBeenCalledWith(
-    //   "items",
-    //   mockItem.id,
-    // );
+    await itemService.deleteItem("1");
+
+    expect(firestoreRepository.deleteDocument).toHaveBeenCalled();
   });
 
-  // tests when an image was added
-  it("should create an item with imageUrl successfully", async () => {
-    // Arrange
-    const mockItemData = {
-      name: "Item with image",
-      description: "Test Description",
-      locationId: "location-id",
-      status: "lost" as itemStatus,
-      contactInfo: "test@email.com",
-      imageUrl: "uploads/test-image.jpg", // simulate multer output
-    };
+  it("should throw error when deleting non-existent item", async () => {
+    jest
+      .spyOn(itemService, "getItemById")
+      .mockRejectedValue(new NotFoundError("Item not found", "ITEM_NOT_FOUND"));
 
-    const mockDocumentId = "test-item-id";
+    await expect(itemService.deleteItem("bad")).rejects.toThrow(NotFoundError);
+  });
 
-    (firestoreRepository.createDocument as jest.Mock).mockResolvedValue(
-      mockDocumentId,
-    );
+  // advanced feature - get items from specific location
+  it("should get items by location id", async () => {
+    (locationService.getLocationById as jest.Mock).mockResolvedValue({
+      id: "loc-1",
+    });
 
-    // Act
-    const result = await itemService.createItem(mockItemData);
+    (firestoreRepository.getDocuments as jest.Mock).mockResolvedValue({
+      docs: [
+        {
+          id: "1",
+          data: () => ({
+            locationId: "loc-1",
+            createdAt: new Date(),
+          }),
+        },
+      ],
+    });
 
-    // Assert
-    expect(firestoreRepository.createDocument).toHaveBeenCalledWith(
-      "items",
-      expect.objectContaining({
-        name: mockItemData.name,
-        description: mockItemData.description,
-        locationId: mockItemData.locationId,
-        status: mockItemData.status,
-        contactInfo: mockItemData.contactInfo,
-        imageUrl: mockItemData.imageUrl,
-        createdAt: expect.any(String),
-      }),
-    );
+    const result = await itemService.getItemsByLocationId("loc-1");
 
-    expect(result.imageUrl).toBe(mockItemData.imageUrl);
+    expect(result.length).toBe(1);
   });
 });

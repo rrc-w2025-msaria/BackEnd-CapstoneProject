@@ -21,17 +21,18 @@ describe("isAuthorized middleware", () => {
     // Arrange
     mockResponse.locals = {
       uid: "user123",
-      role: "admin",
+      role: "manager",
     };
 
-    const middleware = isAuthorized({ hasRole: ["employee", "manager"] });
+    const middleware = isAuthorized({
+      hasRole: ["employee", "manager"],
+    });
 
     // Act
     middleware(mockRequest as Request, mockResponse as Response, nextFunction);
 
-    // Assert
-    // Called without error
-    expect(nextFunction).toHaveBeenCalledWith();
+    expect(nextFunction).toHaveBeenCalledTimes(1);
+    expect(nextFunction.mock.calls[0][0]).toBeUndefined();
   });
 
   it("should pass AuthorizationError to next() when user has insufficient role", () => {
@@ -103,7 +104,7 @@ describe("isAuthorized middleware", () => {
       role: "user",
     };
 
-    // Explicitly disabled
+    // manager only - others disabled
     const middleware = isAuthorized({
       hasRole: ["manager"],
       allowSameUser: false,
