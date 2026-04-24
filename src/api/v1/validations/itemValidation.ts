@@ -1,5 +1,59 @@
 import Joi from "joi";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Item:
+ *       type: object
+ *       required:
+ *         - id
+ *         - name
+ *         - description
+ *         - status
+ *         - contactInfo
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The unique identifier for an item
+ *           example: "item_abc123"
+ *         name:
+ *           type: string
+ *           description: The name of the item
+ *           example: "water bottle"
+ *         description:
+ *           type: string
+ *           description: The description of the item
+ *           example: "Pink nike water bottle"
+ *         locationId:
+ *           type: number
+ *           description: ID of the location it was found/lost
+ *           example: "wtYWq0CQI1l3rN3K1kAA"
+ *         status:
+ *           type: string
+ *           description: current status of the item
+ *           enum: [lost, found, claimed]
+ *           example: "lost"
+ *         contactInfo:
+ *           type: string
+ *           description: Contact information of the person who submitted the item
+ *           example: "user@email.com"
+ *         imageUrl:
+ *           type: string
+ *           description: optional image upload of the item
+ *           example: "/uploads/image.jpg"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time when the item was created
+ *           example: "2024-01-20T14:45:00Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time when the item was last updated
+ *           example: "2024-01-20T14:45:00Z"
+ */
+
 export const itemSchemas = {
   createItem: {
     body: Joi.object({
