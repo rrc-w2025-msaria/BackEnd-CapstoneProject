@@ -1,5 +1,34 @@
 import Joi from "joi";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     LocationContact:
+ *       type: object
+ *       required:
+ *         - id
+ *         - locationId
+ *         - contactName
+ *         - email
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The unique identifier for an item
+ *           example: "item_abc123"
+ *         locationId:
+ *           type: string
+ *           description: Id of the location associated with the contact person
+ *           example: "wtYWq0CQI1l3rN3K1kAA"
+ *         contactName:
+ *           type: string
+ *           description: Name of the contact person
+ *           example: "Marylen Saria"
+ *         email:
+ *           type: string
+ *           description: email of the contact person
+ *           example: "marylen@lostandfound.com"
+ */
 export const locationContactSchemas = {
   createLocationContact: {
     body: Joi.object({
