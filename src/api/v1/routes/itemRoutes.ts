@@ -40,7 +40,7 @@ router.get(
  * /items/{id}
  *  get:
  *    summary: Retrieve an item by ID
- *    tags: {Items}
+ *    tags: [Items]
  *    security:
  *      - bearerAuth: []
  *    parameters:
