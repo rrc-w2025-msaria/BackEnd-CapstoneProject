@@ -54,6 +54,38 @@ import Joi from "joi";
  *           example: "2024-01-20T14:45:00Z"
  */
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       required:
+ *         - error
+ *         - message
+ *       properties:
+ *         error:
+ *           type: string
+ *           description: Error type or code
+ *           example: "VALIDATION_ERROR"
+ *         message:
+ *           type: string
+ *           description: Human-readable error message
+ *           example: "The name field is required"
+ *         details:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               field:
+ *                 type: string
+ *                 example: "name"
+ *               issue:
+ *                 type: string
+ *                 example: "must be a valid string"
+ *           description: Detailed validation errors (optional)
+ */
+
 export const itemSchemas = {
   createItem: {
     body: Joi.object({
